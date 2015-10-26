@@ -4,7 +4,7 @@ import csv
 
 def createLongTermDict(filename):
     with open(filename) as f:
-        reader = csv.reader(f, delimiter="\t")
+        reader = csv.reader(f, delimiter=",")
         housing_array = list(reader)
     dict = {}
     for i in range(1, len(housing_array)):
