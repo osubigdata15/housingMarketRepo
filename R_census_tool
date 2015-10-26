@@ -1,0 +1,17 @@
+#barplot test
+
+library(data.table)
+library(ggplot2)
+
+PopA <- fread("ss13pusa.csv",select=c("ST","INDP","SOCP","WAGP"))
+PopB <- fread("ss13pusb.csv",select=c("ST","INDP","SOCP","WAGP"))
+Population_Data <- rbind(PopA,PopB)
+rm(PopA,PopB)
+save(Population_Data, file="Population_Data.RData")
+
+#remove individuals with NA INDP
+Population_Filtered <- Population_Data[ ! Population_Data$INDP %in% c(NA), ]
+
+#write the  new file
+write.csv(Population_Filtered,file="census_data.csv")
+qplot(Population_Data$ST,Population_Data$WAGP,stat = "identity", geom = "bar")
