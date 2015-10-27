@@ -1,3 +1,4 @@
+
 import argparse
 import collections
 import csv
@@ -17,7 +18,6 @@ args = parser.parse_args()
 with open(args.census_data) as f:
     reader = csv.reader(f, delimiter=",")
     census_array = list(reader)
-
 
 '''
 Build the data structure, which will be formatted as follows: there will be a dictionary whose keys are the 
@@ -56,4 +56,53 @@ for i in occupations:
     for j in occupations[i]:
         occupations[i][j][1] += numpy.median(occupations[i][j][0])
 
-print occupations['5380']['1'][1]
+'''
+Output as the generated data structure as a new csv file. Each unique occupation ID will constitute, 
+a table row, whose columns will be linked each of the 50 states plus Washington D.C. The cells of the
+table body will then be filled with the corresponding median incomes of wage earners in each industry 
+per state.
+'''
+with open("/Users/G7Kellen/Documents/JuniorYear/BDAA/OUTPUT/salaries_per_ind_per_st.csv", "w") as fOut:
+    writer = csv.writer(fOut, delimiter = ",")
+
+    #a list of every state code, corresponding to the states in alabetical order
+    stateList = [1,2,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,22,23,
+    24,25,26,27,28,29,30,31,32,33,34]
+
+    #the rest of the states whose data I couldn't download
+    #,35,36,37,38,39,40,41,42,44,45,46,47,48,49,50,51,53,54,55,56]
+    #create the first row (header) of the output file
+
+    #used distinguish states with no jobs given industry, as decided upon by our team 
+    NO_JOBS = "--"
+
+    #begin by creating a list that will be repeatedly updated with the eventual rows of the csv file.
+    row = [""]
+    for i in range(0, len(stateList)):
+        row.append(`stateList[i]`)
+
+    writer.writerow(row)
+    row = []
+
+
+    #looping over every unique occupation in the dictionary structure we created
+    for job in occupations:
+        #append to the row the occupaton name
+        row.append(job);
+
+        #for every state associated with the current occupation
+        for state in stateList:
+            stateStr = str(state)
+         
+            #append to the row the median salary of this occupation found in the current state
+            if stateStr in occupations[job]:
+                if occupations[job][stateStr][1] > 0:
+                    row.append(occupations[job][stateStr][1])    
+                else:
+                    row.append(NO_JOBS)
+            else:
+                row.append(NO_JOBS)
+
+        #write the row to the csv file, then reset it in time for the next row
+        writer.writerow(row)
+        row = []
