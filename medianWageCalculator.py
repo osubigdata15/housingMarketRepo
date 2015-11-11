@@ -36,7 +36,7 @@ def createDict(census_array):
 
     #loop over each of the rows in the census csv file
     for i in range(1, len(census_array)):
-        jobCode = census_array[i][3]
+        jobCode = census_array[i][4]
         stateCode = census_array[i][1]
         wage = int(census_array[i][2])
 
